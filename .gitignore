@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# NestJS build output
+dist/
+
+# Environment variables
+.env
+.env.local
+
+# Prisma
+/apps/api/prisma/dev.db
+/apps/api/prisma/dev.db-journal
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# My personal notes
+takenotes
