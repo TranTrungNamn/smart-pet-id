@@ -14,3 +14,49 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// --- THÊM CÁC MODEL DƯỚI ĐÂY ---
+
+model User {
+  id        String   @id @default(uuid())
+  clerkUserId String?  @unique // ID từ Clerk (nếu dùng Clerk để quản lý người dùng)
+  email     String   @unique
+  password  String
+  fullName  String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Quan hệ 1-N: 1 User có nhiều Pet
+  pets      Pet[]    
+}
+
+model Pet {
+  id          String   @id @default(uuid())
+  name        String
+  species     String?  // Chó, Mèo, v.v.
+  breed       String?  // Giống loài
+  avatarUrl   String?  // Link ảnh thú cưng
+  qrCodeUrl   String?  // Link mã QR (để tải về)
+  isLost      Boolean  @default(false) // Trạng thái thất lạc
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Khóa ngoại liên kết với User
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  // Quan hệ 1-N: 1 Pet có nhiều lần quét QR
+  scanHistory ScanHistory[]
+}
+
+model ScanHistory {
+  id          String   @id @default(uuid())
+  latitude    Float?   // Vĩ độ (vị trí quét)
+  longitude   Float?   // Kinh độ (vị trí quét)
+  scannedAt   DateTime @default(now())
+
+  // Khóa ngoại liên kết với Pet
+  petId       String
+  pet         Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+}
